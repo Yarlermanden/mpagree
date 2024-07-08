@@ -1,0 +1,6 @@
+{
+    "eslint.workingDirectories": ["Client"],
+    "protoc": {
+        "options": ["--proto_path=protos"]
+    }
+}

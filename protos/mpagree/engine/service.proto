@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package engine;
+
+import "google/protobuf/empty.proto";
+
+service Engine {
+    rpc ConnectPlayer(ConnectPlayerRequest) returns (ConnectPlayerResponse);
+    rpc UpdatePlayer(UpdatePlayerRequest) returns (UpdatePlayerResponse);
+    rpc GetState(google.protobuf.Empty) returns (GetStateResponse);
+}
+
+message ConnectPlayerRequest {
+    string ip_address = 1;
+    string username = 2;
+}
+
+message ConnectPlayerResponse {
+    int64 player_id = 1;
+    //probably need some security as well
+}
+
+message UpdatePlayerRequest {
+    int64 player_id = 1;
+    //add information about what is asked...
+    float delta_x = 2;
+    float delta_y = 3;
+}
+
+message UpdatePlayerResponse {
+    bool success = 1; //whether the server agreed to the update
+}
+
+message GetStateResponse {
+    repeated Player players = 1;
+}
+
+message Player {
+    float x = 1;
+    float y = 2;
+    int64 id = 3;
+    string name = 4;
+}
