@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package service;
+
+import "google/protobuf/timestamp.proto";
+
+service QueueService { 
+    rpc ConnectPlayer(ConnectPlayerRequest) returns (ConnectPlayerResponse);
+    rpc QueueEvent(QueueEventRequest) returns (QueueEventResponse);
+}
+
+message ConnectPlayerRequest {
+    string ip_address = 1;
+    string username = 2;
+}
+
+message ConnectPlayerResponse {
+    int64 player_id = 1;
+}
+
+message QueueEventRequest {
+    PlayerEvent event = 1;
+}
+
+message QueueEventResponse {
+    int64 player_id = 1;
+}
+
+message PlayerEvent {
+    int64 player_id = 1;
+    google.protobuf.Timestamp requested_time = 2;
+    oneof event {
+        MovePlayerEvent move = 3;
+    }
+}
+
+message MovePlayerEvent {
+    float delta_x = 1;
+    float delta_y = 2;
+}

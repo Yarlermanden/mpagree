@@ -1,1 +1,14 @@
 **/target/*
+.DS_Store
+
+
+# Ignore CLI configuration files
+.terraformrc
+terraform.rc
+.terraform
+.terraform.lock.hcl
+*.plan
+
+local.tfstate
+local.tfstate.lock.info
+local.tfstate.backup

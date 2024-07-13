@@ -56,3 +56,21 @@ impl World {
 		None
 	}
 }
+
+#[cfg(test)]
+mod tests {
+	use std::sync::Mutex;
+
+	use super::*;
+
+	#[test]
+	pub fn test_update_player() {
+		let world = Mutex::new(World::new());
+		let player_id = world.lock().unwrap().add_player("test1".to_string());
+		let (delta_x, delta_y) = (0.2, 0.5);
+		let success = world.lock().unwrap().update_player(player_id, delta_x, delta_y);
+
+		assert!(success.is_some());
+		assert_eq!(success.unwrap(), player_id);
+	}
+}

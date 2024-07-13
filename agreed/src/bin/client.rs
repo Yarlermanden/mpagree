@@ -23,8 +23,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 	let connect_resp = client.connect_player(connect_req).await?.into_inner();
 
 	for _ in 0..10 {
-		//let new_position = move_player(current_position.clone());
-
 		let request = tonic::Request::new(UpdatePlayerRequest {
 			player_id: connect_resp.player_id,
 			delta_x: -1.0,

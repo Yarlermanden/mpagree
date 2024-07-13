@@ -2,5 +2,7 @@
     "eslint.workingDirectories": ["Client"],
     "protoc": {
         "options": ["--proto_path=protos"]
-    }
+    },
+    "dotnet.defaultSolution": "mpagree.sln",
+    "FSharp.suggestGitignore": false
 }
