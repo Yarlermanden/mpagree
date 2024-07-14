@@ -21,9 +21,9 @@ public class QueueGrpcService(QueueRepo queueRepo) : QueueBase
 		return new QueueEventResponse { PlayerId = request.Event.PlayerId };
 	}
 
-	public override async Task<GetAndClearEventsResponse> GetAndClearEvents(GetAndClearEventsRequest request, ServerCallContext context)
+	public override async Task<GetAndClearEventsResponse> GetAndClearEvents(Google.Protobuf.WellKnownTypes.Empty empty, ServerCallContext context)
 	{
-		var events = await queueRepo.GetEvents(context.GetSession<IEventContext>(), request);
+		var events = await queueRepo.GetEvents(context.GetSession<IEventContext>());
 		return new GetAndClearEventsResponse { Events = { events } };
 	}
 }

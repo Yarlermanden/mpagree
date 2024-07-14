@@ -53,7 +53,7 @@ public class TestClientCommand : WorkerCommand<TestClientCommand.Executor, TestC
 					{
 						PlayerId = response.PlayerId,
 						RequestedTime = Timestamp.FromDateTime(DateTime.UtcNow),
-						Move = new MovePlayerEvent
+						MovePlayer = new MovePlayerEvent
 						{
 							DeltaX = -1.0f,
 							DeltaY = 0,
@@ -69,7 +69,7 @@ public class TestClientCommand : WorkerCommand<TestClientCommand.Executor, TestC
 
 			if (options.ClearEvents)
 			{
-				var events = await client.GetAndClearEventsAsync(new GetAndClearEventsRequest(), cancellationToken: cancellationToken);
+				var events = await client.GetAndClearEventsAsync(new Google.Protobuf.WellKnownTypes.Empty(), cancellationToken: cancellationToken);
 
 				Console.WriteLine($"Found and cleared {events.Events.Count()} events");
 			}

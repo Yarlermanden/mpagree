@@ -47,14 +47,14 @@ public class QueueRepo : IRepo
 				event_type = evt.EventCase,
 				queued_time = DateTime.UtcNow,
 				requested_time = evt.RequestedTime.ToDateTime(),
-				data = evt.Move.ToByteArray(),
+				data = evt.MovePlayer.ToByteArray(),
 			},
 			session.CancellationToken
 		);
 
 	}
 
-	public async Task<List<PlayerEvent>> GetEvents(ISession<IEventContext> session, GetAndClearEventsRequest request)
+	public async Task<List<PlayerEvent>> GetEvents(ISession<IEventContext> session)
 	{
 		var conn = await session.GetConnection();
 		//should have arguments to check for certain game or something...
@@ -82,7 +82,7 @@ public class QueueRepo : IRepo
 		{
 			PlayerId = x.player_id,
 			RequestedTime = Timestamp.FromDateTimeOffset(x.requested_time),
-			Move = MovePlayerEvent.Parser.ParseFrom(x.data)
+			MovePlayer = MovePlayerEvent.Parser.ParseFrom(x.data)
 		}).ToList();
 
 	}

@@ -3,11 +3,12 @@ syntax = "proto3";
 package service;
 
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
 
 service Queue { 
     rpc ConnectPlayer(ConnectPlayerRequest) returns (ConnectPlayerResponse);
     rpc QueueEvent(QueueEventRequest) returns (QueueEventResponse);
-    rpc GetAndClearEvents(GetAndClearEventsRequest) returns (GetAndClearEventsResponse);
+    rpc GetAndClearEvents(google.protobuf.Empty) returns (GetAndClearEventsResponse);
 }
 
 message ConnectPlayerRequest {
@@ -31,17 +32,13 @@ message PlayerEvent {
     int64 player_id = 1;
     google.protobuf.Timestamp requested_time = 2;
     oneof event {
-        MovePlayerEvent move = 3;
+        MovePlayerEvent move_player = 3;
     }
 }
 
 message MovePlayerEvent {
     float delta_x = 1;
     float delta_y = 2;
-}
-
-message GetAndClearEventsRequest {
-    //could contain game id
 }
 
 message GetAndClearEventsResponse {

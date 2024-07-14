@@ -1,6 +1,6 @@
 use engine;
-use engine::validator::validator_server::ValidatorServer;
 use engine::grpc::Server as GrpcService;
+use engine::validator::validator_server::ValidatorServer;
 use tonic::transport::Server;
 
 #[tokio::main]
