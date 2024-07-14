@@ -1,4 +1,4 @@
-use crate::engine::Player;
+use crate::validator::Player;
 
 #[derive(Debug)]
 pub struct World {

@@ -1,6 +1,6 @@
-use agreed;
-use agreed::engine::engine_server::EngineServer;
-use agreed::grpc::Server as GrpcService;
+use engine;
+use engine::validator::validator_server::ValidatorServer;
+use engine::grpc::Server as GrpcService;
 use tonic::transport::Server;
 
 #[tokio::main]
@@ -11,7 +11,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 	let addr = format!("0.0.0.0:{}", port).parse()?;
 
 	let svc = GrpcService::new();
-	Server::builder().add_service(EngineServer::new(svc)).serve(addr).await?;
+	Server::builder().add_service(ValidatorServer::new(svc)).serve(addr).await?;
 
 	Ok(())
 }

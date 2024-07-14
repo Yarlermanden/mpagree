@@ -3,23 +3,15 @@ using Server.Db;
 using Server.Repos;
 using Server.Utils;
 using Service;
-using static Engine.Engine;
 using static Service.Queue;
 
 namespace Server.Grpc;
 
-//public class QueueGrpcService(EngineClient client, QueueRepo queueRepo) : QueueServiceBase
 public class QueueGrpcService(QueueRepo queueRepo) : QueueBase
 {
 	public override async Task<ConnectPlayerResponse> ConnectPlayer(ConnectPlayerRequest request, ServerCallContext context)
 	{
 		var playerId = await queueRepo.ConnectPlayer(context.GetSession<IEventContext>(), request);
-		// var req = new Engine.ConnectPlayerRequest
-		// {
-		// 	IpAddress = request.IpAddress,
-		// 	Username = request.Username,
-		// };
-		// var resp = await client.ConnectPlayerAsync(req);
 		return new ConnectPlayerResponse() { PlayerId = playerId };
 	}
 

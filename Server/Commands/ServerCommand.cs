@@ -38,7 +38,7 @@ public class ServerCommand : WorkerCommand<ServerCommand.Executor, ServerCommand
 			//builder.Host.UseSerilog();
 			builder.Services.AddGrpc(options => options.MaxReceiveMessageSize = 16 * 1024 * 1024);
 
-			builder.Services.AddGrpcClient<Engine.Engine.EngineClient>(o => o.Address = new Uri(options.AgreedHostUrl));
+			builder.Services.AddGrpcClient<Validator.Validator.ValidatorClient>(o => o.Address = new Uri(options.AgreedHostUrl));
 
 			var app = builder.Build();
 

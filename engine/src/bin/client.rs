@@ -1,9 +1,9 @@
-use agreed::{
+use engine::{
 	self,
-	engine::{ConnectPlayerRequest, UpdatePlayerRequest},
+	validator::{ConnectPlayerRequest, UpdatePlayerRequest},
 };
 
-use crate::agreed::engine::engine_client::EngineClient;
+use crate::engine::validator::validator_client::ValidatorClient;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -13,7 +13,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 	let _env: &str = "local";
 	let port: i32 = 5003;
 
-	let mut client = EngineClient::connect(format!("http://0.0.0.0:{}", port)).await?;
+	let mut client = ValidatorClient::connect(format!("http://0.0.0.0:{}", port)).await?;
 
 	let connect_req = tonic::Request::new(ConnectPlayerRequest {
 		ip_address: "localhost".to_string(),

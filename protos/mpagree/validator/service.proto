@@ -1,10 +1,10 @@
 syntax = "proto3";
 
-package engine;
+package validator;
 
 import "google/protobuf/empty.proto";
 
-service Engine {
+service Validator {
     rpc ConnectPlayer(ConnectPlayerRequest) returns (ConnectPlayerResponse);
     rpc UpdatePlayer(UpdatePlayerRequest) returns (UpdatePlayerResponse);
     rpc GetState(google.protobuf.Empty) returns (GetStateResponse);

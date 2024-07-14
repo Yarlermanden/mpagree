@@ -2,8 +2,8 @@ mod pb {
 	tonic::include_proto!("mod");
 }
 
-pub mod engine {
-	pub use crate::pb::engine::*;
+pub mod validator {
+	pub use crate::pb::validator::*;
 }
 
 pub mod grpc;

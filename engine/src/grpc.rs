@@ -1,6 +1,6 @@
 use crate::{
-	engine::{
-		engine_server::Engine, ConnectPlayerRequest, ConnectPlayerResponse, GetStateResponse, UpdatePlayerRequest, UpdatePlayerResponse,
+	validator::{
+		validator_server::Validator, ConnectPlayerRequest, ConnectPlayerResponse, GetStateResponse, UpdatePlayerRequest, UpdatePlayerResponse,
 	},
 	model::state::World,
 };
@@ -21,7 +21,7 @@ impl Server {
 }
 
 #[tonic::async_trait]
-impl Engine for Server {
+impl Validator for Server {
 	async fn connect_player(&self, request: Request<ConnectPlayerRequest>) -> Result<Response<ConnectPlayerResponse>, Status> {
 		let req = request.into_inner();
 		let player_id = self.world.lock().unwrap().add_player(req.username);
