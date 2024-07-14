@@ -1,0 +1,41 @@
+name: Engine-CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - engine/**
+      - protos/**
+  pull_request:
+    paths:
+      - engine/**
+      - protos/**
+env:
+  IMAGE_TAG: "ci-engine-${{ github.run_number }}"
+
+jobs:
+  build:
+    env:
+      IMAGE_NAME: "..." #TODO add image name ... host place...
+    runs-on: ubuntu-latest
+    outputs:
+      IMAGE_TAG: ${{ env.IMAGE_TAG }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set Up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Expose Github Runtime
+        uses: crazy-max/ghaction-github-runtime@v3
+
+      - name: Docker Build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./EngineDockerfile
+          tags: "${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}"
+          cache-from: type=gha
+          cache-to: type=gha, mode=min
+          push: ${{ false }}

@@ -1,0 +1,72 @@
+name: Server-CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths-ignore:
+      - engine/**
+  pull_request:
+    paths-ignore:
+      - engine/**
+
+env:
+  IMAGE_TAG: "ci-server-${{ github.run_number }}"
+
+jobs:
+  build:
+    env:
+      IMAGE_NAME: "..." #TODO add image name
+    runs-on: ubuntu-latest
+    outputs:
+      IMAGE_TAG: ${{ env.IMAGE_TAG }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Expose GitHub Runtime
+        uses: crazy-max/ghaction-github-runtime@v3
+
+      - name: Docker Build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile
+          tags: "${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}"
+          cache-from: type=gha
+          cache-to: type=gha,mode=min
+          push: ${{ false }}
+
+  lint-dotnet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.x.x
+      - uses: aclemmensen/dotnet-format-problem-matcher@v1.2
+      - run: dotnet tool install -g dotnet-format
+      - run: dotnet format Server.sln --verify-no-changes
+
+  # test:
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: read
+  #     checks: write
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #     - name: Set up Docker Buildx
+  #       uses: docker/setup-buildx-action@v3
+  #     - name: Test
+  #       run: |
+  #         make test-setup
+  #         make run-test
+  #     - name: Publish Test Report
+  #       uses: mikepenz/action-junit-report@v4
+  #       with:
+  #         check_name: "Server Test Report"
+  #         report_paths: "testresults/*.xml"
+  #         fail_on_failure: true
