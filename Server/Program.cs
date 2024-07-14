@@ -14,9 +14,9 @@ var parser = new Parser(with =>
 	with.HelpWriter = Parser.Default.Settings.HelpWriter;
 });
 
-var task = parser.ParseArguments<ServerCommand.Options, ClientCommand.Options>(args).MapResult(
+var task = parser.ParseArguments<ServerCommand.Options, TestClientCommand.Options>(args).MapResult(
 	(ServerCommand.Options options) => ServerCommand.Run(options, cts.Token),
-	(ClientCommand.Options options) => ClientCommand.Run(options, cts.Token),
+	(TestClientCommand.Options options) => TestClientCommand.Run(options, cts.Token),
 	_ => Task.FromResult(1));
 
 Environment.ExitCode = await task;

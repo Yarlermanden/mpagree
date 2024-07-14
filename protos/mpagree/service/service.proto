@@ -4,9 +4,10 @@ package service;
 
 import "google/protobuf/timestamp.proto";
 
-service QueueService { 
+service Queue { 
     rpc ConnectPlayer(ConnectPlayerRequest) returns (ConnectPlayerResponse);
     rpc QueueEvent(QueueEventRequest) returns (QueueEventResponse);
+    rpc GetAndClearEvents(GetAndClearEventsRequest) returns (GetAndClearEventsResponse);
 }
 
 message ConnectPlayerRequest {
@@ -37,4 +38,13 @@ message PlayerEvent {
 message MovePlayerEvent {
     float delta_x = 1;
     float delta_y = 2;
+}
+
+message GetAndClearEventsRequest {
+    //could contain game id
+}
+
+message GetAndClearEventsResponse {
+    repeated PlayerEvent events = 1;
+    //could contain game id
 }

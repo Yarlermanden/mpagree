@@ -4,12 +4,12 @@ using Server.Repos;
 using Server.Utils;
 using Service;
 using static Engine.Engine;
-using static Service.QueueService;
+using static Service.Queue;
 
 namespace Server.Grpc;
 
 //public class QueueGrpcService(EngineClient client, QueueRepo queueRepo) : QueueServiceBase
-public class QueueGrpcService(QueueRepo queueRepo) : QueueServiceBase
+public class QueueGrpcService(QueueRepo queueRepo) : QueueBase
 {
 	public override async Task<ConnectPlayerResponse> ConnectPlayer(ConnectPlayerRequest request, ServerCallContext context)
 	{
@@ -27,5 +27,11 @@ public class QueueGrpcService(QueueRepo queueRepo) : QueueServiceBase
 	{
 		await queueRepo.AddEvent(context.GetSession<IEventContext>(), request);
 		return new QueueEventResponse { PlayerId = request.Event.PlayerId };
+	}
+
+	public override async Task<GetAndClearEventsResponse> GetAndClearEvents(GetAndClearEventsRequest request, ServerCallContext context)
+	{
+		var events = await queueRepo.GetEvents(context.GetSession<IEventContext>(), request);
+		return new GetAndClearEventsResponse { Events = { events } };
 	}
 }
