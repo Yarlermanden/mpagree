@@ -1,0 +1,50 @@
+ARG RUST_VERSION=1.76
+
+##############################################################################
+# Common stage for rust build
+##############################################################################
+FROM rust:${RUST_VERSION}-bullseye as rust-base
+RUN rustup component add rustfmt
+
+##############################################################################
+# Common stage for debug and release dependencies
+##############################################################################
+FROM rust-base as dependencies
+RUN mkdir -p /build/engine/src && mkdir -p /build/protos
+
+WORKDIR /build/engine
+
+RUN apt-get update && apt-get install cmake protobuf-compiler -y
+
+# Copy files
+COPY /engine ./
+# Copy proto specs
+COPY /protos /build/protos
+# Build dependencies
+RUN cargo build
+
+
+##############################################################################
+# Test dependencies
+##############################################################################
+FROM dependencies as test-dependencies
+RUN cargo test
+
+##############################################################################
+# Release build stage
+##############################################################################
+FROM dependencies AS release
+RUN cargo build --release
+
+##############################################################################
+# Final Stage
+##############################################################################
+FROM debian:bullseye-slim as runtime
+RUN apt-get update && apt-get install tini openssl ca-certificates -y && apt-get clean
+
+
+FROM runtime as final
+# Copy binary
+COPY --from=release /build/engine/target/release/service /usr/local/bin/
+# Define entrypoint
+ENTRYPOINT ["tini", "--", "/usr/local/bin/service"]

@@ -1,0 +1,43 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS dotnet_install
+WORKDIR /source
+
+# copy csproj and restore as distinct layers
+COPY Server.sln .
+COPY Server/Server.csproj Server/Server.csproj
+RUN dotnet restore Server.sln
+
+# copy everything else and build app
+COPY Server/ Server/
+COPY protos/ protos/
+
+FROM dotnet_install as dotnet_build
+RUN dotnet publish Server.sln -c release -o /app
+
+# final stage/image
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 as final
+WORKDIR /app
+
+# install OpenTelemetry .NET Automatic Instrumentation
+ARG OTEL_VERSION=1.1.0
+ADD https://github.com/open-telemetry/opentelemetry-dotnet-instrumentation/releases/download/v${OTEL_VERSION}/otel-dotnet-auto-install.sh otel-dotnet-auto-install.sh
+RUN apt-get update && apt-get install -y unzip curl && \
+    OTEL_DOTNET_AUTO_HOME="/otel-dotnet-auto" sh otel-dotnet-auto-install.sh
+
+# enable OpenTelemetry .NET Automatic Instrumentation
+ENV CORECLR_ENABLE_PROFILING="1"
+ENV CORECLR_PROFILER='{918728DD-259F-4A6A-AC2B-B85E1B658318}'
+ENV CORECLR_PROFILER_PATH="/otel-dotnet-auto/linux-x64/OpenTelemetry.AutoInstrumentation.Native.so"
+ENV DOTNET_ADDITIONAL_DEPS="/otel-dotnet-auto/AdditionalDeps"
+ENV DOTNET_SHARED_STORE="/otel-dotnet-auto/store"
+ENV DOTNET_STARTUP_HOOKS="/otel-dotnet-auto/net/OpenTelemetry.AutoInstrumentation.StartupHook.dll"
+ENV OTEL_DOTNET_AUTO_HOME="/otel-dotnet-auto"
+ENV OTEL_DOTNET_AUTO_TRACES_ADDITIONAL_SOURCES="platform-internal"
+
+COPY scripts/docker-otel-platform-fix.sh /otel-dotnet-auto/otel-platform-fix.sh
+
+# Run the platform detection script
+RUN chmod +x /otel-dotnet-auto/otel-platform-fix.sh && sh /otel-dotnet-auto/otel-platform-fix.sh
+
+COPY --from=dotnet_build /app ./
+
+ENTRYPOINT ["dotnet", "Server.dll"]
