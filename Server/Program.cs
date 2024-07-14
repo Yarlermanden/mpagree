@@ -1,8 +1,6 @@
 ﻿using CommandLine;
 using Server.Commands;
 
-//AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-
 var cts = new CancellationTokenSource();
 Console.CancelKeyPress += (_, __) => cts.Cancel();
 
