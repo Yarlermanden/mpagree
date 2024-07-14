@@ -16,7 +16,7 @@ env:
 jobs:
   build:
     env:
-      IMAGE_NAME: "..." #TODO add image name
+      IMAGE_NAME: "server" #TODO add image name
     runs-on: ubuntu-latest
     outputs:
       IMAGE_TAG: ${{ env.IMAGE_TAG }}
