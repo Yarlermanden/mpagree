@@ -33,7 +33,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: Dockerfile
+          file: ./ServerDockerfile
           tags: "${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}"
           cache-from: type=gha
           cache-to: type=gha,mode=min
